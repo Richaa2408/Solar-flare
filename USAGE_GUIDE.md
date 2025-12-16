@@ -33,9 +33,12 @@ docker --version
 ---
 
 ### Step 2: Load the Docker Image
+#### 1. Download the image
+Download the Docker image from the link below and place it in your project directory:
+
+https://drive.google.com/file/d/1GhRKX1ij6ctEpLD52IdzlT8p211vySDf/view?usp=sharing
 
 Open a terminal in the folder containing your files and run:
-
 ```bash
 docker load -i solar-flare-api.tar
 ```
