@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHEP | Stellar Event Data Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <div class="noise-overlay"></div>
+    <div class="grid-background"></div>
+
+    <nav class="navbar glass">
+        <div class="nav-left">SHEP / DATA EXPLORER</div>
+        <div class="nav-middle">
+            <a href="/" class="nav-link active">PREDICTOR</a>
+            <a href="/analysis.html" class="nav-link">ANALYSIS</a>
+        </div>
+        <div class="nav-right">
+            <span class="status-badge" id="api-status">API: Connecting...</span>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Header -->
+        <header class="page-header">
+            <h1 class="page-title">Solar Flare Classification</h1>
+            <p class="page-subtitle">
+                Explore the RHESSI mission dataset and test the predictive model on real historical events.
+            </p>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="explorer-grid">
+
+            <!-- Left Column: Data Sampler -->
+            <section class="panel data-panel">
+                <div class="panel-header">
+                    <h2>Dataset Row</h2>
+                    <button class="action-btn" onclick="fetchRandomSample()">
+                        <span class="icon">↻</span> Load Random Sample
+                    </button>
+                </div>
+
+                <div class="data-display" id="data-display">
+                    <div class="empty-state">
+                        <p>Click "Load Random Sample" to fetch a real event from the dataset.</p>
+                    </div>
+                    <!-- Data rows will be injected here -->
+                </div>
+
+                <div class="row-meta" id="row-meta" style="display: none;">
+                    <span>Flare ID: <strong id="val-flare-id">-</strong></span>
+                    <span class="tag">RHESSI</span>
+                </div>
+            </section>
+
+            <!-- Right Column: Model Inference -->
+            <section class="panel inference-panel">
+                <div class="panel-header">
+                    <h2>Model Prediction</h2>
+                </div>
+
+                <div class="inference-content">
+                    <div class="model-status">
+                        <div class="status-item">
+                            <span class="label">Actual Duration</span>
+                            <span class="value duration-value" id="actual-duration">-</span>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="status-item">
+                            <span class="label">Predicted Class</span>
+                            <span class="value prediction-value" id="predicted-class">-</span>
+                        </div>
+                    </div>
+
+                    <div id="prediction-details" class="prediction-details hidden">
+                        <div class="confidence-bar-container">
+                            <div class="confidence-label">Model Confidence</div>
+                            <div class="confidence-bar">
+                                <div class="fill" style="width: 0%"></div>
+                            </div>
+                            <div class="confidence-score">0.0%</div>
+                        </div>
+
+                        <div class="result-message" id="result-message">
+                            <!-- Verification text -->
+                        </div>
+                    </div>
+
+                    <div class="action-area">
+                        <button class="classify-btn" id="predict-btn" onclick="predictData()" disabled>
+                            Run Classification Model
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mini EDA Stats -->
+                <div class="eda-preview">
+                    <h3>Dataset Context</h3>
+                    <div class="stat-grid" id="eda-stats-grid">
+                        <!-- Loaded via JS -->
+                        <div class="stat-item loading">Loading stats...</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>SHEP v2.0 | Powered by LightGBM & FastAPI</p>
+    </footer>
+
+    <script src="/script.js"></script>
+</body>
+
+</html>

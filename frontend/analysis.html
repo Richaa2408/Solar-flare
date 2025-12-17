@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHEP | Analysis & Insights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .plot-container {
+            background: #000;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .plot-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .select-input {
+            background: #111;
+            color: #FFF;
+            border: 1px solid #333;
+            padding: 5px 10px;
+            font-family: 'JetBrains Mono';
+            border-radius: 4px;
+        }
+
+        .section-desc {
+            color: #888;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="noise-overlay"></div>
+    <div class="grid-background"></div>
+
+    <nav class="navbar glass">
+        <div class="nav-left">SHEP / ANALYSIS MODULE</div>
+        <div class="nav-middle">
+            <a href="/" class="nav-link">PREDICTOR</a>
+            <a href="/analysis.html" class="nav-link active">ANALYSIS</a>
+        </div>
+        <div class="nav-right">
+            <span class="status-badge" id="api-status">API: Connecting...</span>
+        </div>
+    </nav>
+
+    <main class="container">
+        <header class="page-header">
+            <h1 class="page-title">Exploratory Data Analysis</h1>
+            <p class="page-subtitle">
+                Interactive visualization of the RHESSI Solar Flare dataset. Inspect feature distributions and
+                correlations.
+            </p>
+        </header>
+
+        <div class="explorer-grid">
+
+            <!-- About the Data -->
+            <section class="panel inference-panel" style="grid-column: span 2;">
+                <div class="panel-header">
+                    <h2>About the Data</h2>
+                </div>
+                <div class="inference-content">
+                    <p class="section-desc">Overview of the RHESSI Solar Flare dataset.</p>
+
+                    <div class="stats-summary-grid">
+                        <div class="summary-card">
+                            <span class="label">Total Rows</span>
+                            <span class="value" id="total-rows">-</span>
+                        </div>
+                        <div class="summary-card">
+                            <span class="label">Total Columns</span>
+                            <span class="value" id="total-cols">-</span>
+                        </div>
+                        <div class="summary-card">
+                            <span class="label">Missing Values</span>
+                            <span class="value" id="total-nulls">-</span>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <h3>Descriptive Statistics</h3>
+                        <div class="overflow-x-auto">
+                            <table class="data-table stats-table" id="stats-table">
+                                <thead>
+                                    <tr>
+                                        <th>Column</th>
+                                        <th>Count</th>
+                                        <th>Mean</th>
+                                        <th>Std</th>
+                                        <th>Min</th>
+                                        <th>Max</th>
+                                        <th>Nulls</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="7">Loading...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Missing Data -->
+            <section class="panel inference-panel" style="grid-column: span 2;">
+                <div class="panel-header">
+                    <h2>Missing Data Analysis</h2>
+                </div>
+                <div class="inference-content">
+                    <p class="section-desc">Distribution of null values across dataset columns.</p>
+                    <div class="plot-container">
+                        <img id="null-plot" class="plot-img" src="/plot/null-distribution" alt="Null Distribution Plot">
+                    </div>
+                </div>
+            </section>
+
+            <!-- distributions -->
+            <section class="panel inference-panel">
+                <div class="panel-header">
+                    <h2>Univariate Analysis</h2>
+                </div>
+                <div class="inference-content">
+                    <p class="section-desc">Analyze the distribution of a single feature.</p>
+                    <div class="controls">
+                        <select id="dist-col-select" class="select-input" onchange="updateDistPlot()">
+                            <option value="duration.s">duration.s</option>
+                            <!-- populated by JS -->
+                        </select>
+                    </div>
+                    <div class="plot-container">
+                        <img id="dist-plot" class="plot-img" src="/plot/distribution?column=duration.s"
+                            alt="Distribution Plot">
+                    </div>
+                </div>
+            </section>
+
+            <!-- correlations -->
+            <section class="panel inference-panel">
+                <div class="panel-header">
+                    <h2>Global Correlation</h2>
+                </div>
+                <div class="inference-content">
+                    <p class="section-desc">Overview of feature relationships across the dataset.</p>
+                    <div class="plot-container">
+                        <img id="corr-plot" class="plot-img" src="/plot/correlation" alt="Correlation Matrix">
+                    </div>
+                </div>
+            </section>
+
+            <!-- scatter -->
+            <section class="panel inference-panel" style="grid-column: span 2;">
+                <div class="panel-header">
+                    <h2>Bivariate Analysis</h2>
+                </div>
+                <div class="inference-content">
+                    <p class="section-desc">Compare two features to identify trends and clusters.</p>
+                    <div class="controls">
+                        <label>X Axis:</label>
+                        <select id="scatter-x-select" class="select-input" onchange="updateScatterPlot()">
+                            <option value="duration.s">duration.s</option>
+                        </select>
+                        <label>Y Axis:</label>
+                        <select id="scatter-y-select" class="select-input" onchange="updateScatterPlot()">
+                            <option value="total.counts">total.counts</option>
+                        </select>
+                    </div>
+                    <div class="plot-container">
+                        <img id="scatter-plot" class="plot-img" src="/plot/scatter?x=duration.s&y=total.counts"
+                            alt="Scatter Plot">
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="/script.js"></script>
+    <script>
+        // Init Analysis Specific Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAnalysisOptions();
+        });
+    </script>
+</body>
+
+</html>
