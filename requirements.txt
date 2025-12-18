@@ -45,3 +45,5 @@ traitlets==5.14.3
 typing_extensions==4.15.0
 tzdata==2025.2
 wcwidth==0.2.14
+uvicorn[standard]==0.34.0
+fastapi==0.115.6

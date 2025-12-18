@@ -1,34 +1,35 @@
-# 🌟 Solar Flare Prediction API - Usage Guide
+# 🌟 Solar Flare Prediction App - User Guide
 
-A beginner-friendly guide to run the Solar Flare Duration Classifier using Docker.
-
----
-
-## 📁 What You Need
-
-Before starting, make sure you have these 3 files in the same folder:
-
-| File | Description |
-|------|-------------|
-| `solar-flare-api.tar` | The Docker image (pre-built) |
-| `Solar Flares from RHESSI Mission -10.csv` | The dataset |
-| `client_example.py` | Python script to call the API |
+This guide explains how to run the SHEP (Stellar High-Energy Pulse) Prediction System locally on your machine.
 
 ---
 
-## 🚀 Step-by-Step Instructions
+## 🚀 Quick Start (Windows)
 
-### Step 1: Install Docker
+1.  **Double-click** the `run_local.bat` file in this folder.
+2.  Wait for the server to start (you'll see `Uvicorn running on http://0.0.0.0:8000`).
+3.  Open your browser to: **[http://localhost:8000](http://localhost:8000)**
 
-If you don't have Docker installed:
+That's it!
 
-- **Windows/Mac**: Download [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- **Linux**: Run `sudo apt install docker.io`
+---
 
-Verify installation:
-```bash
-docker --version
-```
+## 💻 Manual Start (Command Line)
+
+If you prefer using the terminal:
+
+1.  **Install Expectations**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+2.  **Start the Server**:
+    ```bash
+    uvicorn api:app --host 0.0.0.0 --port 8000
+    ```
+
+3.  **Open App**:
+    Go to **[http://localhost:8000](http://localhost:8000)**
 
 ---
 
@@ -95,9 +96,7 @@ python client_example.py
 
 ✅ **Expected output:**
 ```
-==================================================
 Solar Flare API Client Example (Random CSV Row)
-==================================================
 
 1. Checking API health...
    Status: healthy
@@ -109,7 +108,6 @@ Solar Flare API Client Example (Random CSV Row)
    Prediction label: Long (>=400s)
    Features used: {'flare': 2021213.0, 'peak.c/s': 136.0, ...}
 
-==================================================
 Done!
 ```
 
@@ -147,43 +145,6 @@ curl http://localhost:8000/health
 
 ## 🔧 Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| "Cannot connect to API" | Make sure Docker container is running |
-| "Docker not found" | Install Docker Desktop |
-| "Port 8000 in use" | Use `docker run -p 8001:8000 solar-flare-api` and update `API_URL` in client |
-| CSV file not found | Put the CSV in the same folder as `client_example.py` |
-
----
-
-## 📝 Using Your Own Data
-
-To predict with your own data in Python:
-
-```python
-import requests
-import pandas as pd
-
-# Load your CSV (must have same columns as training data)
-df = pd.read_csv("your_data.csv")
-
-# Get any row
-row = df.iloc[0].to_dict()
-
-# Make prediction
-response = requests.post("http://localhost:8000/predict", json={"row": row})
-print(response.json())
-```
-
-The API automatically extracts only the 7 features it needs from your full row.
-
----
-
-## 🎯 That's It!
-
-You've successfully:
-1. ✅ Loaded the Docker image
-2. ✅ Started the API server
-3. ✅ Made predictions using Python
-
-For more details, visit http://localhost:8000/docs when the API is running.
+- **Dataset Not Found**: Ensure `Solar Flares from RHESSI Mission -10.csv` is in the same folder as `api.py`.
+- **Model Not Found**: Ensure `solar_flare_model.pkl` is present.
+- **Port In Use**: If 8000 is taken, run with `--port 8001`.
